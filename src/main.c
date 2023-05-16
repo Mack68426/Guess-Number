@@ -3,39 +3,68 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
-
+#include <math.h>
+#include <assert.h>
 
 // build a number-guess game
 // and seperate each game function to files
 
+void strtruncat(char _Str[], const char _Part[])
+{
+    assert(_Str && _Part);
+    
+    size_t pos = 0;
+    
+    pos = strcspn(_Str, _Part);
+    _Str[pos] = '\0';
+}
+
+// get a number from user in command line
+char *user_input(const char *prompt, char *result)
+{
+    char buffer[BUFSIZ];
+    
+    // user prompt and input
+    printf("%s", prompt); fflush(stdout);
+    fgets(buffer, BUFSIZ, stdin);
+    
+    // cut off the newline in the end of input string
+    strtruncat(buffer, "\r\n");
+
+
+    return result = buffer;
+}
+
+// generate a random number ranged [_Min, _Max]
+int randint(int _Min,int _Max)
+{
+    return rand() % (_Max - _Min) + (_Min + 1);
+}
 
 int main(int argc, char const *argv[])
 {
+    // initialize the random seed generator
+    srand(time(NULL));
+
     int guess  = 0;
-    int answer = 0; 
-    // int chance = 3;
-    int times = 0;
-
-    srand(time(0));
-
-    answer = rand() % 100 + 1;
-
+    int times  = 0;
+    int answer = randint(0, 100);
+    
+    // buffer for recieving the input from user
+    char result[BUFSIZ];
+    char replay[5];
+    
     do 
     {
         guess = 0;
-        printf("\nGUESS A NUMBER: "); fflush(stdout);
-        scanf("%d", &guess);
+        user_input("\nGUESS A NUMBER(1~100): ", result);
 
-    
-        // chance--;
+        guess = atoi(result);
+        
+        printf("You type: %s\n", result); // debug
+        // printf("The answer is: %d\n", answer); // debug
         times++;
-
-        // if (!chance)
-        // {
-        //     puts("不好意思>< 機會用完囉!");
-        //     puts("");
-        //     break;
-        // }
+        // guess = answer; // for debug
 
         if (guess < answer)
         {
@@ -52,15 +81,17 @@ int main(int argc, char const *argv[])
             printf("想繼續嗎?(y/n) ");
             fflush(stdout);
 
-            char yn[5];
-            fgets(yn, 5, stdin);
+            strtruncat(fgets(replay, BUFSIZ, stdin), "\r\n");
 
-            printf("%s\n", yn);
-
-            if (tolower(yn[0]) == 'y')  continue;
+            if (tolower(replay[0]) == 'y')
+            {
+                answer = randint(0, 100);
+                continue;
+            }  
             else break;
         }
-    } while(1);
+
+    } while(guess);
     
 
     puts("遊戲結束");
