@@ -32,7 +32,7 @@ char *user_input(const char *prompt, char *result)
     strtruncat(buffer, "\r\n");
 
 
-    return result = buffer;
+    return strncpy(result, buffer, strlen(buffer) + 1ULL);
 }
 
 // generate a random number ranged [_Min, _Max]
@@ -61,10 +61,9 @@ int main(int argc, char const *argv[])
 
         guess = atoi(result);
         
-        printf("You type: %s\n", result); // debug
+        // printf("You type: %s\n", result); // debug
         // printf("The answer is: %d\n", answer); // debug
         times++;
-        // guess = answer; // for debug
 
         if (guess < answer)
         {
@@ -91,7 +90,7 @@ int main(int argc, char const *argv[])
             else break;
         }
 
-    } while(guess);
+    } while(result);
     
 
     puts("遊戲結束");
